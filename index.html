@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Domino Tower</title>
 	<meta name="Kosina Zoltán" content=""/>
-  <script src="src.js"></script>
+  <script src="DominoTower.js"></script>
+  <script src="Domino.js"></script>
   <style>
     body {
       margin: 0;
@@ -22,8 +23,8 @@
 
 <body>
   <div>
-    <img src="img.png" id="img" onload="DT.init()"/>
-    <canvas width="500" height="500" id="dt"></canvas>
+    <img src="img.png" onload="new DominoTower(document.getElementById('DominoTower'), this)"/>
+    <canvas width="600" height="600" id="DominoTower"></canvas>
   </div>
 </body>
 </html>
