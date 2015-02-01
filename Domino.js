@@ -6,9 +6,11 @@ var Domino = function (top, bottom) {
   this.height = 192;
   this.x = 0;
   this.y = 0;
+  this.offsetX = 0;
+  this.offsetY = 0;
   this.targetX = 0;
   this.targetY = 0;
-  this.id = null;
+  this.slot = null;
   this.handler = null;
   this.canvas = null;
   this.context = null;
@@ -22,8 +24,8 @@ Domino.prototype.draw = function (type) {
                          this.height * type / 2,
                          this.width,
                          this.height / 2,
-                         this.x,
-                         this.y,
+                         this.x + this.offsetX,
+                         this.y + this.offsetY,
                          this.width,
                          this.height / 2);
   this.context.drawImage(this.image,
@@ -31,8 +33,8 @@ Domino.prototype.draw = function (type) {
                          this.height * type / 2,
                          this.width,
                          this.height / 2,
-                         this.x,
-                         this.y + this.height / 2,
+                         this.x + this.offsetX,
+                         this.y + this.offsetY + this.height / 2,
                          this.width,
                          this.height / 2);
 };
@@ -63,18 +65,26 @@ Domino.prototype.handle = function (e) {
   if (this.handler &&
       x > this.x && x < this.x + this.width &&
       y > this.y && y < this.y + this.height) {
-    this.handler(this.id);
+    this.handler(this.slot);
   }
 };
 
-Domino.prototype.setTo = function (id, handler, canvas, context, image) {
+Domino.prototype.panToSlot = function (slot, handler, canvas, context, image) {
   'use strict';
-  this.id = id;
-  this.targetX = (this.width + 4) * this.id + 2;
+  this.slot = slot;
+  this.targetX = (this.width + 4) * this.slot + 2;
   this.targetY = 2;
   this.handler = handler || this.handler;
   this.canvas = canvas || this.canvas;
   this.context = context || this.context;
   this.image = image || this.image;
   this.canvas.addEventListener('click', this.handle.bind(this));
+};
+
+Domino.prototype.panToLevel = function (level, base) {
+  'use strict';
+  this.offsetX = (this.width + 4) * (2.5 + base) + 2;
+  this.targetX = (this.width + 4) * base;
+  this.targetY = this.height * -level;
+  this.level = level;
 };
