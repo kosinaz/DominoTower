@@ -10,13 +10,17 @@ var DominoTower = function (canvas, image) {
   this.hidden = [];
   for (top = 0; top < 6; top += 1) {
     for (bottom = 0; bottom < 6; bottom += 1) {
-      this.hidden.push(new Domino(this.context, this.image, top, bottom));
+      this.hidden.push(new Domino(top, bottom));
     }
   }
   this.available = [];
   for (id = 0; id < 6; id += 1) {
     this.available.push(this.addRandomFrom(this.hidden));
-    this.available[id].setTo(id, this.build.bind(this), this.canvas);
+    this.available[id].setTo(id,
+                             this.build.bind(this),
+                             this.canvas,
+                             this.context,
+                             this.image);
   }
   this.builtin = [];
   this.score = 0;
@@ -72,7 +76,11 @@ DominoTower.prototype.build = function (id) {
   this.builtin[0].targetX = (this.available[id].width + 4) * 2.5 + 2;
   this.builtin[0].targetY = this.available[id].height * 2;
   this.available[id] = this.addRandomFrom(this.hidden);
-  this.available[id].setTo(id, this.build.bind(this), this.canvas);
+  this.available[id].setTo(id,
+                           this.build.bind(this),
+                           this.canvas,
+                           this.context,
+                           this.image);
   if (this.builtin[1]) {
     this.builtin[1].targetY = this.builtin[1].height * 3;
   }

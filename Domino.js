@@ -1,13 +1,18 @@
-var Domino = function (context, image, top, bottom) {
+var Domino = function (top, bottom) {
   'use strict';
-  this.context = context;
-  this.image = image;
   this.top = top;
   this.bottom = bottom;
   this.width = 96;
   this.height = 192;
   this.x = 0;
   this.y = 0;
+  this.targetX = 0;
+  this.targetY = 0;
+  this.id = null;
+  this.handler = null;
+  this.canvas = null;
+  this.context = null;
+  this.image = null;
 };
 
 Domino.prototype.draw = function (type) {
@@ -52,18 +57,24 @@ Domino.prototype.update = function () {
 
 Domino.prototype.handle = function (e) {
   'use strict';
+  var x, y;
+  x = e.offsetX === undefined ? e.clientX - this.canvas.offsetLeft : e.offsetX;
+  y = e.offsetX === undefined ? e.clientY - this.canvas.offsetTop : e.offsetY;
   if (this.handler &&
-      e.offsetX > this.x && e.offsetX < this.x + this.width &&
-      e.offsetY > this.y && e.offsetY < this.y + this.height) {
+      x > this.x && x < this.x + this.width &&
+      y > this.y && y < this.y + this.height) {
     this.handler(this.id);
   }
 };
 
-Domino.prototype.setTo = function (id, handler, canvas) {
+Domino.prototype.setTo = function (id, handler, canvas, context, image) {
   'use strict';
-  this.targetX = (this.width + 4) * id + 2;
-  this.targetY = 2;
   this.id = id;
-  this.handler = handler;
-  canvas.addEventListener('click', this.handle.bind(this));
+  this.targetX = (this.width + 4) * this.id + 2;
+  this.targetY = 2;
+  this.handler = handler || this.handler;
+  this.canvas = canvas || this.canvas;
+  this.context = context || this.context;
+  this.image = image || this.image;
+  this.canvas.addEventListener('click', this.handle.bind(this));
 };
