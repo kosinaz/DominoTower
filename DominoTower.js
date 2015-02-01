@@ -6,6 +6,7 @@ var DominoTower = function (canvas, image) {
   this.context = this.canvas.getContext('2d');
   this.context.font = '100px Georgia';
   this.context.textBaseline = 'bottom';
+  this.context.textAlign = 'right';
   this.image = image;
   this.hidden = [];
   for (top = 0; top < 6; top += 1) {
@@ -22,7 +23,9 @@ var DominoTower = function (canvas, image) {
                                    this.context,
                                    this.image);
   }
+  this.base = 0;
   this.builtin = [];
+  this.builtin[this.base] = [];
   this.score = 0;
   window.setInterval(this.update.bind(this), 20);
   window.setInterval(this.draw.bind(this), 20);
@@ -30,38 +33,49 @@ var DominoTower = function (canvas, image) {
 
 DominoTower.prototype.update = function () {
   'use strict';
-  var slot, level;
+  var slot, base, level;
   for (slot = 0; slot < this.available.length; slot += 1) {
-    this.available[slot].update();
+    if (this.available[slot]) {
+      this.available[slot].update();
+    }
   }
-  for (level = 0; level < this.builtin.length; level += 1) {
-    if (this.builtin[level]) {
-      this.builtin[level].offsetY =
-        this.builtin[level].height * (this.builtin.length + 2);
-      this.builtin[level].update();
+  for (base = 0; base <= this.base; base += 1) {
+    for (level = 0; level < this.builtin[base].length; level += 1) {
+      if (this.builtin[base][level]) {
+        this.builtin[base][level].offsetY =
+          this.builtin[base][level].height *
+          (this.builtin[this.base].length + 2);
+        this.builtin[base][level].offsetX =
+          (this.builtin[base][level].width + 4) * (2.5 - this.base) + 2;
+        this.builtin[base][level].update();
+      }
     }
   }
 };
 
 DominoTower.prototype.draw = function () {
   'use strict';
-  var slot, level;
-  this.context.fillRect(0, 0, 1600, 1600);
+  var slot, base, level;
   this.context.drawImage(this.image, 0, 200, 600, 600, 0, 0, 600, 600);
+  for (base = 0; base <= this.base; base += 1) {
+    for (level = 0; level < this.builtin[base].length; level += 1) {
+      if (this.builtin[base][level]) {
+        this.builtin[base][level].draw(1);
+      }
+    }
+  }
+  this.context.fillRect(0, 0, 600, 200);
   for (slot = 0; slot < this.available.length; slot += 1) {
-    if (this.builtin[0] &&
-        this.available[slot].bottom === this.builtin[0].top) {
-      this.available[slot].draw(1);
-    } else {
-      this.available[slot].draw(0);
+    if (this.available[slot]) {
+      if (this.builtin[this.base][0] && this.available[slot] &&
+          this.available[slot].bottom === this.builtin[this.base][0].top) {
+        this.available[slot].draw(1);
+      } else {
+        this.available[slot].draw(0);
+      }
     }
   }
-  for (level = 0; level < this.builtin.length; level += 1) {
-    if (this.builtin[level]) {
-      this.builtin[level].draw(1);
-    }
-  }
-  this.context.fillText(this.score, 10, 600);
+  this.context.fillText(this.score, 590, 590);
 };
 
 DominoTower.prototype.addRandomFrom = function (array) {
@@ -71,19 +85,33 @@ DominoTower.prototype.addRandomFrom = function (array) {
 
 DominoTower.prototype.build = function (slot) {
   'use strict';
-  if (this.builtin[0] &&
-      this.available[slot].bottom !== this.builtin[0].top) {
+  var s;
+  if (this.builtin[this.base][0] &&
+      this.available[slot].bottom !== this.builtin[this.base][0].top) {
     return false;
   }
-  this.builtin.unshift(this.available[slot]);
-  this.builtin[0].x = (this.builtin[0].width + 4) * (slot - 2.5) + 2;
-  this.builtin[0].y = this.builtin[0].height * (-this.builtin.length - 2);
-  this.builtin[0].panToLevel(this.builtin.length, 0);
+  this.builtin[this.base].unshift(this.available[slot]);
+  this.builtin[this.base][0].x =
+    (this.builtin[this.base][0].width + 4) * (slot - 2.5) + 2;
+  this.builtin[this.base][0].y =
+    this.builtin[this.base][0].height * (-this.builtin[this.base].length - 2);
+  this.builtin[this.base][0].panToLevel(this.builtin[this.base].length,
+                                        this.base);
+  this.score += this.builtin[this.base].length;
   this.available[slot] = this.addRandomFrom(this.hidden);
-  this.available[slot].panToSlot(slot,
-                                 this.build.bind(this),
-                                 this.canvas,
-                                 this.context,
-                                 this.image);
-  this.score += this.builtin.length;
+  if (this.available[slot]) {
+    this.available[slot].panToSlot(slot,
+                                   this.build.bind(this),
+                                   this.canvas,
+                                   this.context,
+                                   this.image);
+  }
+  for (s = 0; s < this.available.length; s += 1) {
+    if (this.available[s] &&
+        this.available[s].bottom === this.builtin[this.base][0].top) {
+      return true;
+    }
+  }
+  this.base += 1;
+  this.builtin[this.base] = [];
 };

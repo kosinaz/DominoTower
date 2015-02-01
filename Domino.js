@@ -83,7 +83,7 @@ Domino.prototype.panToSlot = function (slot, handler, canvas, context, image) {
 
 Domino.prototype.panToLevel = function (level, base) {
   'use strict';
-  this.offsetX = (this.width + 4) * (2.5 + base) + 2;
+  this.offsetX = (this.width + 4) * (2.5 - base) + 2;
   this.targetX = (this.width + 4) * base;
   this.targetY = this.height * -level;
   this.level = level;
