@@ -2,8 +2,8 @@ var Domino = function (top, bottom) {
   'use strict';
   this.top = top;
   this.bottom = bottom;
-  this.width = 96;
-  this.height = 192;
+  this.width = 100;
+  this.height = 200;
   this.x = 0;
   this.y = 0;
   this.offsetX = 0;
@@ -21,7 +21,7 @@ Domino.prototype.draw = function (type) {
   'use strict';
   this.context.drawImage(this.image,
                          this.top * this.width,
-                         this.height * type / 2,
+                         this.height * (type === 2 ? 1 : type) / 2,
                          this.width,
                          this.height / 2,
                          this.x + this.offsetX,
@@ -72,8 +72,8 @@ Domino.prototype.handle = function (e) {
 Domino.prototype.panToSlot = function (slot, handler, canvas, context, image) {
   'use strict';
   this.slot = slot;
-  this.targetX = (this.width + 4) * this.slot + 2;
-  this.targetY = 2;
+  this.targetX = this.width * this.slot;
+  this.targetY = 0;
   this.handler = handler || this.handler;
   this.canvas = canvas || this.canvas;
   this.context = context || this.context;
@@ -83,8 +83,8 @@ Domino.prototype.panToSlot = function (slot, handler, canvas, context, image) {
 
 Domino.prototype.panToLevel = function (level, base) {
   'use strict';
-  this.offsetX = (this.width + 4) * (2.5 - base) + 2;
-  this.targetX = (this.width + 4) * base;
+  this.offsetX = this.width * (2.5 - base);
+  this.targetX = this.width * base;
   this.targetY = this.height * -level;
   this.level = level;
 };

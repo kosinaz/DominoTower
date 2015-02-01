@@ -1,14 +1,15 @@
-# Domino Tower
+# Domino Towers
 
 Simple domino game with a twist.
 
-Click on a domino to build the foundation of your tower, then add matching elements as long as you can to reach the highest score!
+Click on a domino to build the foundation of your tower, then add matching elements as long as you can!
 
-The lighter windows indicate matching dominoes.
+The lighter windows indicate matching dominoes. When you run out of them, the building of a next tower will be started.
+
+Higher towers mean higher final score!
 
 In development:
 
-* Multiple towers to use up all the remaining dominoes
 * Recordable highscores
 * Time bonus, straight bonus
 * Different themes and higher numbers on dominoes
