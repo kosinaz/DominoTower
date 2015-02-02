@@ -41,20 +41,8 @@ Domino.prototype.draw = function (type) {
 
 Domino.prototype.update = function () {
   'use strict';
-  if (this.targetX > this.x + 4) {
-    this.x += Math.floor((this.targetX - this.x) / 4);
-  } else if (this.targetX < this.x - 4) {
-    this.x -= Math.floor((this.x - this.targetX) / 4);
-  } else {
-    this.x = this.targetX;
-  }
-  if (this.targetY > this.y + 4) {
-    this.y += Math.floor((this.targetY - this.y) / 4);
-  } else if (this.targetY < this.y - 4) {
-    this.y -= Math.floor((this.x - this.targetY) / 4);
-  } else {
-    this.y = this.targetY;
-  }
+  this.x = this.getNext(this.x, this.targetX);
+  this.y = this.getNext(this.y, this.targetY);
 };
 
 Domino.prototype.handle = function (e) {
@@ -87,4 +75,15 @@ Domino.prototype.panToLevel = function (level, base) {
   this.targetX = this.width * base;
   this.targetY = this.height * -level;
   this.level = level;
+};
+
+Domino.prototype.getNext = function (from, to) {
+  'use strict';
+  if (to > from + 4) {
+    return from + Math.floor((to - from) / 4);
+  }
+  if (to < from - 4) {
+    return from - Math.floor((from - to) / 4);
+  }
+  return to;
 };
