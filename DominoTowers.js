@@ -10,6 +10,8 @@ var DominoTowers = function (canvas, image) {
   this.image = image;
   this.available = [];
   this.builtin = [];
+  this.offsetX = 0;
+  this.offsetY = 0;
   window.setInterval(this.update.bind(this), 20);
   window.setInterval(this.draw.bind(this), 20);
   this.canvas.addEventListener('click', this);
@@ -40,6 +42,17 @@ DominoTowers.prototype.handleEvent = function (e) {
   this.score = 0;
 };
 
+DominoTowers.prototype.getNext = function (from, to) {
+  'use strict';
+  if (to > from + 4) {
+    return from + Math.floor((to - from) / 4);
+  }
+  if (to < from - 4) {
+    return from - Math.floor((from - to) / 4);
+  }
+  return to;
+};
+
 DominoTowers.prototype.update = function () {
   'use strict';
   var slot, base, level;
@@ -50,15 +63,14 @@ DominoTowers.prototype.update = function () {
       }
     }
   }
+  this.offsetX = this.getNext(this.offsetX, this.targetOffsetX);
+  this.offsetY = this.getNext(this.offsetY, this.targetOffsetY);
   if (this.builtin.length) {
     for (base = 0; base <= this.base; base += 1) {
       for (level = 0; level < this.builtin[base].length; level += 1) {
         if (this.builtin[base][level]) {
-          this.builtin[base][level].offsetY =
-            this.builtin[base][level].height *
-            (this.builtin[this.base].length + 2.5);
-          this.builtin[base][level].offsetX =
-            this.builtin[base][level].width * (2.5 - this.base);
+          this.builtin[base][level].offsetX = this.offsetX;
+          this.builtin[base][level].offsetY = this.offsetY;
           this.builtin[base][level].update();
         }
       }
@@ -80,10 +92,10 @@ DominoTowers.prototype.draw = function () {
       if (this.builtin[base][this.builtin[base].length - 1]) {
         this.builtin[base][this.builtin[base].length - 1].draw(2);
       }
+      this.context.drawImage(this.image, 0, 500, 600, 100,
+                            this.offsetX + base * 100 - 25, this.offsetY,
+                             300, 50);
     }
-    this.context.drawImage(this.image, 0, 500, 600, 100, 0,
-                           (this.builtin[this.base].length + 2.5) * 200,
-                           600, 100);
   }
   this.context.drawImage(this.image, 0, 300, 600, 200, 0, 0, 600, 200);
   if (this.available.length) {
@@ -102,7 +114,7 @@ DominoTowers.prototype.draw = function () {
       }
     }
   }
-  this.context.fillText(this.score || '', 600, 600);
+  this.context.fillText(this.score || '', 575, 550);
 };
 
 DominoTowers.prototype.addRandomFrom = function (array) {
@@ -118,10 +130,8 @@ DominoTowers.prototype.build = function (slot) {
     return false;
   }
   this.builtin[this.base].unshift(this.available[slot]);
-  this.builtin[this.base][0].x =
-    this.builtin[this.base][0].width * (slot - 2.5) + 2;
-  this.builtin[this.base][0].y =
-    this.builtin[this.base][0].height * (-this.builtin[this.base].length - 2);
+  this.builtin[this.base][0].x = -this.offsetX + slot * 100;
+  this.builtin[this.base][0].y = -this.offsetY;
   this.builtin[this.base][0].panToLevel(this.builtin[this.base].length,
                                         this.base);
   this.score += this.builtin[this.base].length;
@@ -133,6 +143,11 @@ DominoTowers.prototype.build = function (slot) {
                                    this.context,
                                    this.image);
   }
+  this.targetOffsetX = 50 * (6.5 - this.base * 2);
+  this.targetOffsetY = 100 * Math.max(
+    this.builtin[this.base].length + 2.5,
+    5.5
+  );
   restart = true;
   for (s = 0; s < this.available.length; s += 1) {
     if (this.available[s]) {
