@@ -1,5 +1,7 @@
 # Domino Towers v0.3.0
 
+![Play online](http://gamejolt.com/games/domino-towers/47240)
+
 Simple domino game with a twist.
 
 Click on a domino to build the foundation of your tower, then add matching elements as long as you can!
