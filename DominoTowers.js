@@ -1,9 +1,9 @@
-/*global Domino*/
+/*global Domino, GJAPI*/
 var DominoTowers = function (canvas, image) {
   'use strict';
   this.canvas = canvas;
   this.context = this.canvas.getContext('2d');
-  this.context.font = '100px Georgia';
+  this.context.font = '40px Georgia';
   this.context.textBaseline = 'bottom';
   this.context.textAlign = 'right';
   this.context.fillStyle = '#630';
@@ -39,7 +39,10 @@ DominoTowers.prototype.handleEvent = function (e) {
   this.base = 0;
   this.builtin = [];
   this.builtin[this.base] = [];
+  this.last = new Date();
   this.score = 0;
+  this.gameover = false;
+  this.bonus = 0;
 };
 
 DominoTowers.prototype.getNext = function (from, to) {
@@ -84,6 +87,12 @@ DominoTowers.prototype.draw = function () {
   this.context.drawImage(this.image, 600, 0, 600, 600, 0, 0, 600, 600);
   if (this.builtin.length) {
     for (base = 0; base <= this.base; base += 1) {
+      if (this.builtin[base].length === 0) {
+        this.context.fillText('Click on', 575, 250);
+        this.context.fillText('a domino', 575, 300);
+        this.context.fillText('to start', 575, 350);
+        this.context.fillText('a tower!', 575, 400);
+      }
       for (level = 0; level < this.builtin[base].length - 1; level += 1) {
         if (this.builtin[base][level]) {
           this.builtin[base][level].draw(1);
@@ -96,6 +105,8 @@ DominoTowers.prototype.draw = function () {
                             this.offsetX + base * 100 - 25, this.offsetY,
                              300, 50);
     }
+  } else {
+    this.context.fillText('Click to start!', 575, 250);
   }
   this.context.drawImage(this.image, 0, 300, 600, 200, 0, 0, 600, 200);
   if (this.available.length) {
@@ -114,7 +125,14 @@ DominoTowers.prototype.draw = function () {
       }
     }
   }
-  this.context.fillText(this.score || '', 575, 550);
+  if (this.gameover) {
+    this.context.fillText('No more', 575, 250);
+    this.context.fillText('dominoes!', 575, 300);
+  }
+  this.context.fillStyle = '#630';
+  this.context.fillText(this.score ? 'Score: ' + this.score : '', 575, 500);
+  this.context.fillText(this.bonus > 1 ? 'x' + this.bonus : '', 575, 550);
+  this.context.fillStyle = '#fff';
 };
 
 DominoTowers.prototype.addRandomFrom = function (array) {
@@ -124,7 +142,7 @@ DominoTowers.prototype.addRandomFrom = function (array) {
 
 DominoTowers.prototype.build = function (slot) {
   'use strict';
-  var s, restart;
+  var s, restart, now;
   if (this.builtin[this.base][0] &&
       this.available[slot].bottom !== this.builtin[this.base][0].top) {
     return false;
@@ -134,7 +152,10 @@ DominoTowers.prototype.build = function (slot) {
   this.builtin[this.base][0].y = -this.offsetY;
   this.builtin[this.base][0].panToLevel(this.builtin[this.base].length,
                                         this.base);
-  this.score += this.builtin[this.base].length;
+  now = new Date();
+  this.bonus = Math.max(1, Math.round(1000 / (now - this.last)));
+  this.score += (this.builtin[this.base].length - 1) * this.bonus;
+  this.last = now;
   this.available[slot] = this.addRandomFrom(this.hidden);
   if (this.available[slot]) {
     this.available[slot].panToSlot(slot,
@@ -158,6 +179,8 @@ DominoTowers.prototype.build = function (slot) {
     }
   }
   if (restart) {
+    this.gameover = true;
+    GJAPI.ScoreAdd(0, this.score, this.score + ' points');
     this.canvas.addEventListener('click', this);
   } else {
     this.base += 1;
