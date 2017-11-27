@@ -1,34 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Domino Towers</title>
-	<meta name="Kosina Zoltán" content=""/>
-  <script src="gj-js-api-min.js"></script>
-  <script src="DominoTowers.js"></script>
-  <script src="Domino.js"></script>
-  <style>
-    body {
-      margin: 0;
-    }
-    div {
-      margin: 0 auto;
-      width: 600px;
-      height: 600px;
-    }
-    img {
-      display: none;
-    }
-  </style>
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Domine Towers</title>
+	<script type="text/javascript" src="lib/phaser.js"></script>
+	<script type="text/javascript" src="lib/gj-js-api.js"></script>
+	<script type="text/javascript" src="src/load.js"></script>
+	<script type="text/javascript" src="src/play.js"></script>
+	<script type="text/javascript" src="src/game.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
 </head>
-
 <body>
-  <div>
-    <img src="img.png" onload="new DominoTowers(document.getElementById('DominoTowers'), this)"/>
-    <canvas width="600" height="600" id="DominoTowers"></canvas>
-  </div>
-</body>
-</html>
 
 </body>
 </html>
