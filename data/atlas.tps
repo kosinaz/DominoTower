@@ -199,6 +199,19 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../assets/dominobg.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9Paddings</key>
+                <rect>32,64,64,128</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">../assets/dust.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -244,6 +257,7 @@
             <filename>../assets/dust.png</filename>
             <filename>../assets/foundation.png</filename>
             <filename>../assets/hill.png</filename>
+            <filename>../assets/dominobg.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

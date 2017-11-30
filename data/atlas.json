@@ -1,8 +1,16 @@
 {"frames": [
 
 {
+	"filename": "dominobg.png",
+	"frame": {"x":0,"y":0,"w":120,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":120,"h":120},
+	"sourceSize": {"w":120,"h":120}
+},
+{
 	"filename": "dust.png",
-	"frame": {"x":0,"y":0,"w":64,"h":64},
+	"frame": {"x":120,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -10,7 +18,7 @@
 },
 {
 	"filename": "foundation.png",
-	"frame": {"x":64,"y":0,"w":128,"h":128},
+	"frame": {"x":184,"y":0,"w":128,"h":128},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
@@ -18,7 +26,7 @@
 },
 {
 	"filename": "hill.png",
-	"frame": {"x":192,"y":0,"w":1024,"h":256},
+	"frame": {"x":312,"y":0,"w":1024,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":256},
@@ -29,8 +37,8 @@
 	"version": "1.0",
 	"image": "atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":1216,"h":256},
+	"size": {"w":1336,"h":256},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:adccc27041c1847a37aaeb1bd1e5bcc0:2ff4d8f6507716ae1f00b95d7294f107:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f686a8a32e5bb0ce93b3ee1aad912019:1119b9dac23167e8bd23be31f6e1730c:cbce6b53f0f49e0bf15173c25c41f876$"
 }
 }

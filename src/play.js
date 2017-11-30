@@ -6,15 +6,29 @@ var playState = {
 
         game.stage.backgroundColor = 0x19aeff;
 
-        dominos = [];
+        dominos = [];    
+        dominogroup = game.add.group();    
+        this.towergroup = game.add.group();    
 
         for (var i = 0; i < 6; i += 1) {
             dominos[i] = game.add.button(144 + i * 128, 32, '', this.put, this);
+            dominogroup.add(dominos[i]);
             var n = game.rnd.integerInRange(0, 5);
             dominos[i].addChild(game.make.image(0, 0, 'tiles', n)).data = n;
             n = game.rnd.integerInRange(0, 5);
             dominos[i].addChild(game.make.image(0, 96, 'tiles', n)).data = n;
             this.fly(dominos[i]);
+            dominos[i].emitter = game.add.emitter(
+                dominos[i].x + 48, 
+                dominos[i].y + 192, 
+                50
+            );
+            dominos[i].emitter.makeParticles('atlas', 'dominobg.png');
+            dominos[i].emitter.setAngle(0, 360)
+            //dominos[i].emitter.setAlpha(0.5, 0.7);
+            dominos[i].emitter.setScale(1.5, 1.5, 1.5, 1.5);
+            dominos[i].emitter.gravity = -200;
+            dominos[i].emitter.start(false, 1500, 100);
         }
         game.world.setBounds(0, -9000, 10000, 9576);
         game.add.image(1024 / 2 - 64, 448, 'atlas', 'foundation.png');
@@ -28,7 +42,7 @@ var playState = {
         game.next = -1;
         game.towers = 0;
 
-       
+        game.world.bringToTop(dominogroup);
     },
     
     put: function (domino) {
@@ -52,7 +66,6 @@ var playState = {
         game.newTower = true;
         for (var i = 0; i < 6; i += 1) {
             if (dominos[i].children[1].data === game.next) {
-                //dominos[i].children[1].frame += 6;
                 game.newTower = false;
             }
         }
@@ -65,16 +78,24 @@ var playState = {
                     x: "+192",
                     y: 32
                 }, 1000, Phaser.Easing.Cubic.Out, true).onComplete.add(this.fly);
+                game.add.tween(dominos[i].emitter).to({
+                    x: "+192",
+                    y: 224
+                }, 1000, Phaser.Easing.Cubic.Out, true);
             } else {
                 game.add.tween(dominos[i]).to({
                     y: y
                 }, 1000, Phaser.Easing.Cubic.Out, true).onComplete.add(this.fly);
+                game.add.tween(dominos[i].emitter).to({
+                    y: y + 192
+                }, 1000, Phaser.Easing.Cubic.Out, true);
             }
         }
         game.add.tween(toPut).to({
             x: 464 + game.towers * 192,
             y: game.top
         }, 200, Phaser.Easing.Cubic.In, true).onComplete.add(this.dust);
+        this.towergroup.add(toPut);
     
     },
 
@@ -145,6 +166,5 @@ var playState = {
         } else if (cursors.right.isDown) {
             game.camera.x += 10;
         }
-
     }
 }
